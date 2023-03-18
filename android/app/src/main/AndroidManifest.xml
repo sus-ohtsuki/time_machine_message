@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.time_machine_message">
+    package="net.sus.time_machine_message">
    <application
         android:label="time_machine_message"
         android:name="${applicationName}"
