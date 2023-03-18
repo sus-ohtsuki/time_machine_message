@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "986244877341",
+    "project_id": "timemachinemessage-prod",
+    "storage_bucket": "timemachinemessage-prod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986244877341:android:47cfd3d4b7e00917e70af4",
+        "android_client_info": {
+          "package_name": "net.sus.tmm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986244877341-bmo5vetp78ji8c2m4iq5fiufp59cqf55.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIzWJ5xNvajb_MziswpnCG98Hg9iGfTJ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986244877341-bmo5vetp78ji8c2m4iq5fiufp59cqf55.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "986244877341-kbgnrio0cpbsf2g82oo056dc3itc59ec.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "net.sus.tmm"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
