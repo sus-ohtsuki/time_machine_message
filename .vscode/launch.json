@@ -7,19 +7,22 @@
         {
             "name": "time_machine_message",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "args": ["--dart-define-from-file=dart_defines/dev.json"]
         },
         {
             "name": "time_machine_message (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "args": ["--dart-define-from-file=dart_defines/dev.json"]
         },
         {
             "name": "time_machine_message (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "args": ["--dart-define-from-file=dart_defines/prod.json"]
         }
     ]
 }

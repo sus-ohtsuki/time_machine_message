@@ -1,0 +1,5 @@
+{
+    "flavor": "dev",
+    "appName": "DEV TimeMachine",
+    "appIdSuffix": ".dev"
+}
