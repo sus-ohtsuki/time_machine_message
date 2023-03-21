@@ -1,0 +1,116 @@
+---
+format_version: '11'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: flutter
+workflows:
+  deploy:
+    description: |
+      Builds and deploys app using [Deploy to bitrise.io Step](https://devcenter.bitrise.io/en/getting-started/getting-started-with-flutter-apps.html#deploying-a-flutter-app).
+
+      If you build for iOS, make sure to set up code signing secrets on Bitrise for a successful build.
+
+      Next steps:
+      - Check out [Getting started with Flutter apps](https://devcenter.bitrise.io/en/getting-started/getting-started-with-flutter-apps.html) for signing and deployment options.
+      - Check out the [Code signing guide](https://devcenter.bitrise.io/en/code-signing.html) for iOS and Android
+    steps:
+    - activate-ssh-key@4: {}
+    - git-clone@7: {}
+    - certificate-and-profile-installer@1: {}
+    - flutter-installer@0:
+        inputs:
+        - is_update: 'false'
+    - flutter-analyze@0:
+        inputs:
+        - project_location: "$BITRISE_FLUTTER_PROJECT_LOCATION"
+    - flutter-test@1:
+        inputs:
+        - project_location: "$BITRISE_FLUTTER_PROJECT_LOCATION"
+    - flutter-build@0:
+        inputs:
+        - project_location: "$BITRISE_FLUTTER_PROJECT_LOCATION"
+        - platform: both
+        - ios_output_type: archive
+    - deploy-to-bitrise-io@2: {}
+  primary:
+    description: |
+      Builds project and runs tests.
+
+      Next steps:
+      - Check out [Getting started with Flutter apps](https://devcenter.bitrise.io/en/getting-started/getting-started-with-flutter-apps.html).
+    steps:
+    - activate-ssh-key@4: {}
+    - git-clone@7: {}
+    - flutter-installer@0: {}
+    - install-flutter-version-manager@1: {}
+    - flutter-test@1:
+        inputs:
+        - project_location: "$BITRISE_FLUTTER_PROJECT_LOCATION"
+    - certificate-and-profile-installer@1.10:
+        inputs:
+        - default_provisioning_profile_url: "$BITRISE_PROVISION_URL"
+        - default_certificate_passphrase: "$BITRISE_CERTIFICATE_PASSPHRASE"
+        - default_certificate_url: "$BITRISE_CERTIFICATE_URL"
+        - install_defaults: 'no'
+    - flutter-build@0:
+        inputs:
+        - additional_build_params: "--dart-define-from-file=dart_defines/dev.json"
+        - android_output_type: appbundle
+    - xcode-archive@4:
+        inputs:
+        - export_development_team: D367A63PCD
+        - export_options_plist_content: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE
+            plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist
+            version=\"1.0\">\n<dict>\n\t<key>compileBitcode</key>\n\t<false/>\n\t<key>destination</key>\n\t<string>export</string>\n\t<key>method</key>\n\t<string>ad-hoc</string>\n\t<key>provisioningProfiles</key>\n\t<dict>\n\t\t<key>net.sus.tmm.dev</key>\n\t\t<string>tmm-dev-AdHoc</string>\n\t</dict>\n\t<key>signingCertificate</key>\n\t<string>DCEADDC442E2F5D3731DDC7F1A9CE8B5A15D9100</string>\n\t<key>signingStyle</key>\n\t<string>manual</string>\n\t<key>stripSwiftSymbols</key>\n\t<true/>\n\t<key>teamID</key>\n\t<string>D367A63PCD</string>\n\t<key>thinning</key>\n\t<string>&lt;none&gt;</string>\n</dict>\n</plist>\n"
+        - perform_clean_action: 'yes'
+        - fallback_provisioning_profile_url_list: "$BITRISE_PROVISION_URL"
+        - distribution_method: ad-hoc
+    - deploygate--upload-app-bitrise-step@1:
+        inputs:
+        - app_path: "$BITRISE_AAB_PATH"
+        - owner_name: "$DEPLOY_GATE_OWNER_NAME"
+        - api_key: "$DEPLOY_GATE_API_KEY"
+        title: DeployGate Upload (Android)
+    - deploygate--upload-app-bitrise-step@1:
+        inputs:
+        - owner_name: "$DEPLOY_GATE_OWNER_NAME"
+        - app_path: "$BITRISE_IPA_PATH"
+        - api_key: "$DEPLOY_GATE_API_KEY"
+        title: DeployGate Upload (iOS)
+    - slack@3:
+        inputs:
+        - title_link: https://deploygate.com/organizations/sus-ohtsuki
+        - buttons: |
+            View App|${BITRISE_APP_URL}
+            View Build|${BITRISE_BUILD_URL}
+        - fields: |-
+            App|${BITRISE_APP_TITLE}
+            Branch|${BITRISE_GIT_BRANCH}
+            Workflow|${BITRISE_TRIGGERED_WORKFLOW_ID}
+            Install Page (iOS)|${DEPLOY_GATE_IOS_URL}
+            Install Page (Android)|${DEPLOY_GATE_ANDROID_URL}
+        - webhook_url: "$SLACK_NOTICE_URL"
+    envs:
+    - opts:
+        is_expand: false
+      DEPLOY_GATE_OWNER_NAME: sus-ohtsuki
+    - opts:
+        is_expand: false
+      DEPLOY_GATE_IOS_URL: https://deploygate.com/organizations/sus-ohtsuki/platforms/ios/apps/net.sus.tmm.dev
+    - opts:
+        is_expand: false
+      DEPLOY_GATE_ANDROID_URL: https://deploygate.com/organizations/sus-ohtsuki/platforms/android/apps/net.sus.tmm.dev
+meta:
+  bitrise.io:
+    stack: osx-xcode-14.2.x-ventura
+    machine_type_id: g2-m1.4core
+app:
+  envs:
+  - opts:
+      is_expand: false
+    BITRISE_FLUTTER_PROJECT_LOCATION: "."
+  - opts:
+      is_expand: false
+    BITRISE_SCHEME: Runner
+  - opts:
+      is_expand: false
+    BITRISE_PROJECT_PATH: ios/Runner.xcworkspace
