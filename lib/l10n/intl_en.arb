@@ -1,5 +1,8 @@
 {
   "mailAddress": "mail address",
   "password": "password",
-  "signIn": "Sign In"
- }
+  "signIn": "Sign In",
+  "signInWithGoogle": "Sign in with Google",
+  "signUp": "Sign Up",
+  "forgotPassword": "Forgot Password?"
+}

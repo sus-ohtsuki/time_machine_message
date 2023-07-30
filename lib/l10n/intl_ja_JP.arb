@@ -1,5 +1,8 @@
 {
   "mailAddress": "メールアドレス",
   "password": "パスワード",
-  "signIn": "ログイン"
+  "signIn": "ログイン",
+  "signInWithGoogle": "Googleアカウントでログイン",
+  "signUp": "新規会員登録",
+  "forgotPassword": "パスワードを忘れた方"
 }
